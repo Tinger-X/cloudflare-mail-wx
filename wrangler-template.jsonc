@@ -1,0 +1,31 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "email-to-wx",
+	"main": "src/index.js",
+	"compatibility_date": "2025-06-04",
+	"workers_dev": false,
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		"Method": "rpc",  // http：原生HTTP请求方式，srv：服务绑定请求方式，rpc：直接调用服务内函数方式
+		"ContentTtl": 300,
+		"Receiver": "your-real@email.com",  // 将收到的所有邮件都转发到这个邮箱
+		"Template": "template-id",  // 微信公众号里的模板id
+		"NoticeUrl": "https://wx-notice.your-domain.com/send",  // wx-notice服务的接口地址，参考：https://github.com/Tinger-X/cloudflare-wx-notice
+		"NoticeAuthKey": "your-notice-auth-key",  // wx-notice服务的鉴权字段名
+		"NoticeAuthValue": "your-notice-auth-value"  // wx-notice服务的鉴权字段值
+	},
+	"send_email": [
+		{
+			"name": "Email"
+		}
+	],
+	"services": [
+		{
+			"binding": "WxNotice",
+			"service": "wx-notice",  // cloudflare中wx-notice的worker名
+			"entrypoint": "RpcWxNotice"  // wx-notice中暴露的RPC调用类名
+		}
+	]
+}
